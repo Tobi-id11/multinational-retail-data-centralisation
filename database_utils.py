@@ -20,13 +20,13 @@ class DatabaseConnector:
     """
     def __init__(self):
         pass
-    def read_db_creds(self):
-        with open('db_creds.yaml', 'r') as f:
+    def read_db_creds(self,yaml_file):
+        with open(yaml_file, 'r') as f:
             # This reads the db_creds.yaml and saves the dictionary of the credentials to the creds_dict variable
             creds_dict = yaml.safe_load(f)
         return creds_dict
-    def init_db_engine(self):
-        creds_dict = self.read_db_creds()
+    def init_db_engine(self,creds_dict):
+
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
         HOST = creds_dict['RDS_HOST']
@@ -37,8 +37,7 @@ class DatabaseConnector:
         # Creates an engine which contains information about type of database and connection pool - aws database
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
         return engine
-    def list_db_tables(self):
-        engine = self.init_db_engine()
+    def list_db_tables(self,engine):
         inspector = inspect(engine)
         # Displays all the table names
         return inspector.get_table_names()
